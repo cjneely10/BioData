@@ -14,9 +14,6 @@ Display options provided in KEGG_decoder will be available for final step only
 
 """
 
-decoder = local["KEGG-decoder"]
-expander = local["KEGG-expander"]
-
 
 class ArgParse:
 
@@ -201,8 +198,10 @@ def run():
     # Run KEGG-decoder
     decoder_outfile = prefix(ap.args.output) + ".decoder.tsv"
     print_run(
-        decoder["--input", ap.args.input,
-                "--output", decoder_outfile]
+        local["python3"][
+            os.path.join(os.path.dirname(os.path.dirname(__file__)), "KEGG_decoder.py"),
+            "--input", ap.args.input, "--output", decoder_outfile
+        ]
     )
     # Run hmmsearch
     hmmsearch_results = prefix(ap.args.input) + ".expander.tbl"
@@ -216,7 +215,8 @@ def run():
     # Run expander
     expander_outfile = prefix(ap.args.input) + ".expander.tsv"
     print_run(
-        expander[
+        local["python3"][
+            os.path.join(os.path.dirname(os.path.dirname(__file__)), "KEGG_expander.py"),
             decoder_outfile, expander_outfile
         ]
     )
