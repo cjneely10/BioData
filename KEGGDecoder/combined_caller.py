@@ -85,7 +85,7 @@ def prefix(_path):
     :param _path: Path, possibly relative
     :return:
     """
-    return os.path.basename(os.path.splitext(Path(_path).resolve())[0])
+    return os.path.splitext(Path(_path).resolve())[0]
 
 
 def try_which():
@@ -199,7 +199,7 @@ def run():
     decoder_outfile = prefix(ap.args.output) + ".decoder.tsv"
     print_run(
         local["python3"][
-            os.path.join(os.path.dirname(os.path.dirname(__file__)), "KEGG_decoder.py"),
+            os.path.join(os.path.dirname(__file__), "KEGG_decoder.py"),
             "--input", ap.args.input, "--output", decoder_outfile
         ]
     )
@@ -208,15 +208,14 @@ def run():
     print_run(
         local[ap.args.hmmsearch_path]
         ["--tblout", hmmsearch_results, "-T", "75",
-         glob.glob(os.path.join(os.path.dirname(os.path.dirname(__file__)),
-                                "/lib/*/site-packages/KEGGDecoder/HMM_Models/expander_dbv0.7.hmm"))[0],
+         os.path.join(os.path.dirname(__file__), "HMM_Models/expander_dbv0.7.hmm"),
          ap.args.protein_fasta]
     )
     # Run expander
     expander_outfile = prefix(ap.args.input) + ".expander.tsv"
     print_run(
         local["python3"][
-            os.path.join(os.path.dirname(os.path.dirname(__file__)), "KEGG_expander.py"),
+            os.path.join(os.path.dirname(__file__), "KEGG_expander.py"),
             decoder_outfile, expander_outfile
         ]
     )
