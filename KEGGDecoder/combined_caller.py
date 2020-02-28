@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import os
+import glob
 import argparse
 import pandas as pd
 from pathlib import Path
@@ -13,39 +14,10 @@ Display options provided in KEGG_decoder will be available for final step only
 
 """
 
-decoder = local[os.path.join(os.path.dirname(__file__), "KEGG_decoder.py")]
-expander = local[os.path.join(os.path.dirname(__file__), "KEGG_expander.py")]
-
 
 class ArgParse:
 
     def __init__(self, arguments_list, description, *args, **kwargs):
-        """ Class for handling parsing of arguments and error handling
-
-        Example:
-
-        args_list = [
-            [["required_argument"],
-                {"help": "Help string for argument"}],
-            [["-o", "--optional"],
-                {"help": "Optional argument", "default": "None"}],
-            [["-r", "--required"],
-                {"help": "Required argument", "required": "True"}]
-        ]
-
-        ap = ArgParse(args_list, description="Sample:\tSample program")
-
-        ## Now you can access as ap.args.required_argument, ap.args.optional, and ap.args.required
-        ## This script will handle requirement checking, and will not allow the script to launch unless required flags
-            are set.
-        ## Note that you CANNOT use '-' in the names of arguments!
-        ## Note that any other constructor argument that argparse.ArgumentParser() takes will also be used
-
-        Ensure that the final value in the inner list does not have '-' characters
-        Include "require": True in inner dictionary to treat arg as required
-
-        :param arguments_list: List[List[List[str], Dict[str, str]]]
-        """
         self.arguments_list = arguments_list
         self.args = []
         # Instantiate ArgumentParser
@@ -226,20 +198,25 @@ def run():
     # Run KEGG-decoder
     decoder_outfile = prefix(ap.args.output) + ".decoder.tsv"
     print_run(
-        decoder["--input", ap.args.input,
-                "--output", decoder_outfile]
+        local["python3"][
+            os.path.join(os.path.dirname(os.path.dirname(__file__)), "KEGG_decoder.py"),
+            "--input", ap.args.input, "--output", decoder_outfile
+        ]
     )
     # Run hmmsearch
     hmmsearch_results = prefix(ap.args.input) + ".expander.tbl"
     print_run(
         local[ap.args.hmmsearch_path]
         ["--tblout", hmmsearch_results, "-T", "75",
-         os.path.join(os.path.dirname(__file__), "HMM_Models/expander_dbv0.7.hmm"), ap.args.protein_fasta]
+         glob.glob(os.path.join(os.path.dirname(os.path.dirname(__file__)),
+                                "/lib/*/site-packages/KEGGDecoder/HMM_Models/expander_dbv0.7.hmm"))[0],
+         ap.args.protein_fasta]
     )
     # Run expander
     expander_outfile = prefix(ap.args.input) + ".expander.tsv"
     print_run(
-        expander[
+        local["python3"][
+            os.path.join(os.path.dirname(os.path.dirname(__file__)), "KEGG_expander.py"),
             decoder_outfile, expander_outfile
         ]
     )
