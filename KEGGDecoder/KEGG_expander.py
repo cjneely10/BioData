@@ -257,22 +257,22 @@ def main():
 
 	import pandas as pd
 
-	file_in = open(filehandle, "r")
-	genome = pd.read_csv(file_in, index_col=0, sep='\t')
-	import seaborn as sns
-	sns.set(font_scale=1.2)
-	sns.set_style({"savefig.dpi": 200})
-	ax = sns.heatmap(genome, cmap=plt.cm.YlOrRd, linewidths=2, linecolor='k', square=True, xticklabels=True,
-					 yticklabels=True)
-	ax.xaxis.tick_top()
-	# ax.set_yticklabels(ax.get_yticklabels(), rotation=90)
-	plt.xticks(rotation=90)
-	plt.yticks(rotation=0)
-	# get figure (usually obtained via "fig,ax=plt.subplots()" with matplotlib)
-	fig = ax.get_figure()
-	# specify dimensions and save
-	fig.set_size_inches(100, 100)
-	fig.savefig("hmm_heatmap.svg")
+	# file_in = open(filehandle, "r")
+	# genome = pd.read_csv(file_in, index_col=0, sep='\t')
+	# import seaborn as sns
+	# sns.set(font_scale=1.2)
+	# sns.set_style({"savefig.dpi": 200})
+	# ax = sns.heatmap(genome, cmap=plt.cm.YlOrRd, linewidths=2, linecolor='k', square=True, xticklabels=True,
+	# 				 yticklabels=True)
+	# ax.xaxis.tick_top()
+	# # ax.set_yticklabels(ax.get_yticklabels(), rotation=90)
+	# plt.xticks(rotation=90)
+	# plt.yticks(rotation=0)
+	# # get figure (usually obtained via "fig,ax=plt.subplots()" with matplotlib)
+	# fig = ax.get_figure()
+	# # specify dimensions and save
+	# fig.set_size_inches(100, 100)
+	# fig.savefig("hmm_heatmap.svg")
 
 
 if __name__ == "__main__":
