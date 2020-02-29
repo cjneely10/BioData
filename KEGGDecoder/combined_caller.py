@@ -416,7 +416,7 @@ def run():
     print_run(
         local["python3"][
             os.path.join(os.path.dirname(__file__), "KEGG_expander.py"),
-            decoder_outfile, expander_outfile
+            hmmsearch_results, expander_outfile
         ]
     )
     # Run decoder-expander and save final image
